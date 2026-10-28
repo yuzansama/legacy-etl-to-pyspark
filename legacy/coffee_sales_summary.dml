@@ -1,0 +1,8 @@
+/* Input record format of orders.dat (legacy). Illustrative, written for this demo. */
+record
+  string("|")  ticket_no;
+  string("|")  store_id;
+  string("|")  sku;
+  string("|")  sold_at;        /* YYYYMMDDHH24MISS */
+  string("\n") line_amount;    /* decimal text, 2 places */
+end;

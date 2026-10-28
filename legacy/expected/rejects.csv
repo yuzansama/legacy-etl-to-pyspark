@@ -1,0 +1,5 @@
+run_date,ticket_no,reject_reason
+2026-10-27,T1008,bad_sold_at
+2026-10-27,T1009,bad_line_amount
+2026-10-27,T1010,below_min_amount
+2026-10-28,T1019,bad_line_amount

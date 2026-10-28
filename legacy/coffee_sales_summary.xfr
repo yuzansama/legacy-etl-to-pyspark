@@ -1,0 +1,33 @@
+/* Transforms of the legacy graph, one block per component. Illustrative, written for this demo. */
+
+/* Reformat */
+out :: reformat(in) =
+begin
+  out.ticket_no   :: in.ticket_no;
+  out.store_id    :: in.store_id;
+  out.sku         :: string_upcase(string_lrtrim(in.sku));
+  out.sold_at     :: (datetime("YYYYMMDDHH24MISS")) in.sold_at;
+  out.line_amount :: (decimal(18,2)) in.line_amount;
+end;
+
+/* Filter by Expression: select -> next component, deselect -> reject file */
+select_expr :: !is_null(in.sold_at) && !is_null(in.line_amount) && in.line_amount >= 0;
+
+/* Join (outer on in0) with lookup dim sku_catalog, key {sku} */
+out :: join(in0, in1) =
+begin
+  out.*           :: in0.*;
+  out.bean_origin :: in1.bean_origin;
+end;
+
+/* Rollup, key {sale_date, store_id, bean_origin} */
+out :: rollup(in) =
+begin
+  out.sale_date   :: (date("YYYY-MM-DD")) in.sold_at;
+  out.store_id    :: in.store_id;
+  out.bean_origin :: in.bean_origin;
+  out.tickets     :: count(1);
+  out.gross_sales :: sum(in.line_amount);
+end;
+
+/* Output Table sales_by_store: truncate & load per sale_date */
